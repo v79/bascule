@@ -1,6 +1,7 @@
 package org.liamjd.bascule
 
 import org.liamjd.bascule.annotations.SparkController
+import org.liamjd.bascule.db.dbConnections
 import org.reflections.Reflections
 import org.reflections.scanners.MethodAnnotationsScanner
 import org.reflections.scanners.SubTypesScanner
@@ -20,6 +21,9 @@ class BasculeServer : SparkApplication {
 		port(number = portNumber?.toInt() ?: 4580)
 
 		staticFiles.location("/public")
+
+		// initialize database
+		dbConnections.initialize()
 
 		val reflections = Reflections(thisPackage.name, MethodAnnotationsScanner(), TypeAnnotationsScanner(), SubTypesScanner())
 		val controllers = reflections.getTypesAnnotatedWith(SparkController::class.java)

@@ -3,11 +3,11 @@ package org.liamjd.web.db.entities
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.liamjd.bascule.db.dbConnections
 import org.liamjd.bascule.db.entities.PAGE_TEMPLATE
 
 class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
@@ -23,7 +23,7 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 
 		fun get(refName: String): PageTemplates? {
 			var template: PageTemplates? = null
-			transaction {
+			transaction(dbConnections.connect()) {
 				addLogger(StdOutSqlLogger)
 				val result = PAGE_TEMPLATE.select {
 					PAGE_TEMPLATE.refName eq refName
@@ -36,14 +36,14 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 		}
 
 		fun createPageTemplate(refName: String, source: String): Long {
-			val pageTemplates = transaction {
+			val id = transaction(dbConnections.connect()) {
 				addLogger(StdOutSqlLogger)
 				PageTemplates.new {
 					this.refName = refName
 					this.sourceText = source
-				}
+				}.id.value
 			}
-			return pageTemplates.id.value
+			return id
 		}
 
 	}

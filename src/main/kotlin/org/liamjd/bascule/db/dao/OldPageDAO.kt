@@ -7,9 +7,9 @@ import org.liamjd.bascule.db.Dao
 import org.liamjd.bascule.db.entities.*
 import org.liamjd.web.db.entities.*
 
-class PageDAO : AbstractDao(), Dao {
+class OldPageDAO : AbstractDao(), Dao {
 
-	fun getPage(refName: String): Pages? =
+	fun getPageX(refName: String): Pages? =
 			transaction {
 				Pages.find { PAGE.refName eq refName }.firstOrNull()
 			}
@@ -19,7 +19,7 @@ class PageDAO : AbstractDao(), Dao {
 				PageTemplates.get(found.template.id)
 			}
 
-	fun getBlockGroups(page: Pages): Set<BlockGroups> {
+	fun getBlockGroupsX(page: Pages): Set<BlockGroups> {
 		val groupSet = mutableSetOf<BlockGroups>()
 		transaction {
 //			addLogger(StdOutSqlLogger)
@@ -37,7 +37,7 @@ class PageDAO : AbstractDao(), Dao {
 		return groupSet
 	}
 
-	fun getBlocks(page: Pages): Set<Blocks> {
+	fun getBlocksX(page: Pages): Set<Blocks> {
 		val blockSet = mutableSetOf<Blocks>()
 		transaction {
 //			addLogger(StdOutSqlLogger)
@@ -53,7 +53,7 @@ class PageDAO : AbstractDao(), Dao {
 		return blockSet
 	}
 
-	fun getBlockType(blocks: Blocks): BlockTypes? {
+	fun getBlockTypeX(blocks: Blocks): BlockTypes? {
 		var types: BlockTypes? = null
 		transaction {
 //			addLogger(StdOutSqlLogger)
@@ -68,7 +68,7 @@ class PageDAO : AbstractDao(), Dao {
 		return types
 	}
 
-	fun countPages(): Int = transaction { Pages.count() }
+	fun countPagesX(): Int = transaction { Pages.count() }
 
 	fun getAllTemplates() : List<PageTemplates> {
 		var list = listOf<PageTemplates>()

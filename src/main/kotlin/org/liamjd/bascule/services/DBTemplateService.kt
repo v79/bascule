@@ -1,6 +1,5 @@
 package org.liamjd.bascule.services
 
-import org.liamjd.bascule.db.dao.PageTemplateDao
 import org.liamjd.web.db.entities.PageTemplates
 import org.liamjd.web.model.PageTemplate
 

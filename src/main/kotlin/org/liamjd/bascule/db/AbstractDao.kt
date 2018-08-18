@@ -8,13 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.liamjd.bascule.db.entities.*
 import org.slf4j.LoggerFactory
 
-object dbConnections {
-	val connectionString = "jdbc:mysql://127.0.0.1:3306/"
-	val driverClass = "org.mariadb.jdbc.Driver"
-	val dbDatabase = "bascule"
-	val dbPassword = "indy25tlx"
-	val dbUser = "liam"
-}
+class DB
 
 abstract class AbstractDao : Dao {
 	open val daoLogger = LoggerFactory.getLogger(AbstractDao::class.java)

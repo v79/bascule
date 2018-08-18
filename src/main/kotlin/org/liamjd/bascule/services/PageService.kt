@@ -4,7 +4,7 @@ import org.liamjd.web.model.Page
 import org.liamjd.web.model.PageTemplate
 
 interface PageService {
-	fun getPage(refName: String): Page?
+	fun get(refName: String): Page?
 
 	fun save(page: Page) : Boolean
 
