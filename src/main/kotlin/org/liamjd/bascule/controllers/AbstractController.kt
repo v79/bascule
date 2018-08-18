@@ -6,6 +6,7 @@ import spark.Session
 import spark.kotlin.after
 import spark.kotlin.before
 import spark.kotlin.notFound
+import spark.template.handlebars.HandlebarsTemplateEngine
 
 /**
  * Turn a simple map of strings into a JSON format string
@@ -45,6 +46,7 @@ abstract class AbstractController(path: String) {
 	open var path: String = path
 
 //	protected val engine: ThymeleafTemplateEngine = ThymeleafTemplateEngine()
+	protected val engine: HandlebarsTemplateEngine = HandlebarsTemplateEngine("/templates",".hbt")
 	val model: MutableMap<String, Any> = hashMapOf<String, Any>()
 
 //	open val authService = FakeAuthService()
@@ -53,6 +55,7 @@ abstract class AbstractController(path: String) {
 		before {
 			model.clear()
 			model.put("__mode", Mode.VIEW) // default to viewing
+			model.put("__title","Bascule CMS")
 			debugSession(session())
 
 			if(!session().attribute<String>("user").isNullOrBlank()) {

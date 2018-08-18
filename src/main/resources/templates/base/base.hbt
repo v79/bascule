@@ -1,0 +1,29 @@
+{{#block "head"}}
+
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>{{ __title }}</title>
+	</head>
+
+{{/block}}
+
+<body>
+	{{#block "content"}}
+	{{/block}}
+</body>
+
+{{#block "footer" }}
+	<footer>
+		<span>Powered by Handlebars.java</span>
+		<span>And SparkKotlin</span>
+	</footer>
+{{/block}}
+
+</html>
+
+
+
+
+

@@ -9,6 +9,7 @@ buildscript {
     ext.commonmark_version = '0.11.0'
     ext.caisson_version = '0.3.3-SNAPSHOT'
 	ext.handlebars_version = '4.1.0'
+	ext.spark_handlebars_version = '2.7.1'
 }
 
 plugins {
@@ -24,6 +25,7 @@ repositories {
 	jcenter()
 	// for exposed database
 	maven { url "http://dl.bintray.com/kotlin/exposed" }
+	maven { url "http://central.maven.org/maven2/"}
 }
 
 dependencies {
@@ -37,6 +39,9 @@ dependencies {
 
 	// handlebars templating
 	compile group: 'com.github.jknack', name: 'handlebars', version: "$handlebars_version"
+//	compile group: 'com.sparkjava', name: 'spark-template-handlebars', version: "$spark_handlebars_version"
+	compile group: 'com.github.jknack', name: 'handlebars-guava-cache', version: '4.0.6'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
 
 	// sl4j logging
 	compile group: 'org.slf4j', name: 'slf4j-simple', version: "$slf4j_version"

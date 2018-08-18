@@ -1,0 +1,18 @@
+{{#partial "content" }}
+
+	<h2>Create new page template</h2>
+
+	<form name="pageTemplate_new" id="pageTemplate_new" method="post" action="new" >
+		<label for="refName">Reference name</label>
+		<input name="refName" id="refName"/>
+
+		<label for="source">Template sourcecode</label>
+		<textarea name="source" id="source" form="pageTemplate_new"></textarea>
+
+
+		<button type="submit">Submit</button>
+	</form>
+
+{{/partial}}
+
+{{> base/base}}

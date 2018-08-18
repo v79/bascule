@@ -1,0 +1,5 @@
+{{#partial "content" }}
+<p>Other page</p>
+{{/partial}}
+
+{{> base/base}}
