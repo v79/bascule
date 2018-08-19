@@ -1,5 +1,19 @@
 {{#partial "content" }}
-<p>Home page</p>
+	<h2>List of pages</h2>
+
+	<ol>
+		{{#each pages }}
+			<li>{{ refName}} - {{title}} </li>
+		{{/each}}
+	</ol>
+
+	<div>
+		<h3>Actions</h3>
+		<ul>
+			<li><a href="/pageTemplate/new">New Page Template</a></li>
+			<li><a href=""></a>New Page</li>
+		</ul>
+	</div>
 {{/partial}}
 
 {{> base/base}}

@@ -42,4 +42,14 @@ class DBPageService : PageService {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
+	override fun listPages(count: Int): List<Page> {
+		val rows = Pages.list(count)
+		val result = mutableListOf<Page>()
+
+		rows.forEach {
+			val page = Page(it.refName, it.title)
+			result.add(page)
+		}
+		return result
+	}
 }

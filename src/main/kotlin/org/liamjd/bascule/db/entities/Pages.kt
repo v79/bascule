@@ -122,6 +122,16 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 			}
 			return false
 		}
+
+		fun list(count: Int): List<Pages> {
+			val result = mutableListOf<Pages>()
+			transaction(dbConnections.connect()) {
+				addLogger(StdOutSqlLogger)
+				val all = PAGE.selectAll().limit(count)
+				result.addAll(Pages.wrapRows(all).toMutableList())
+			}
+			return result
+		}
 	}
 
 

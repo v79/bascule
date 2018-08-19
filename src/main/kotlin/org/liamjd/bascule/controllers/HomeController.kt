@@ -20,6 +20,9 @@ class HomeController : AbstractController(path = "/") {
 
 		get(path) {
 
+			val topPages = pageService.listPages(10)
+			model.put("pages", topPages)
+
 			debugModel()
 			engine.render(ModelAndView(model,"home"))
 		}
@@ -39,7 +42,7 @@ class HomeController : AbstractController(path = "/") {
 
 			if(form!=null) {
 				templateService.create(form)
-				redirect("${path}page/new/${form.refName}")
+				redirect(path)
 			}
 		}
 
@@ -56,7 +59,7 @@ class HomeController : AbstractController(path = "/") {
 			}
 		}
 
-		post("${path}page/new/new") {
+		post("${path}page/new/create") {
 			val form = request.bind<PageForm>()
 			val page: Page?
 			if(form != null) {
@@ -67,11 +70,12 @@ class HomeController : AbstractController(path = "/") {
 			}
 			if(page != null) {
 				pageService.save(page)
-				"Now, save page ${page}"
+				redirect(path)
 			} else {
 				"oh dear"
 			}
 		}
+
 	}
 
 	fun debugModel() {
