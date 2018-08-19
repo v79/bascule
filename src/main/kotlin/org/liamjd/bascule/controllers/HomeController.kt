@@ -21,12 +21,10 @@ class HomeController : AbstractController(path = "/") {
 			model.put("pages", topPages)
 			model.put("templates", topTemplates)
 
-			debugModel()
 			engine.render(ModelAndView(model,"home"))
 		}
 
 		get("$path/other") {
-			debugModel()
 			engine.render(ModelAndView(model,"other"))
 		}
 

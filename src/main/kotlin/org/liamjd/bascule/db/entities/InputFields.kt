@@ -1,6 +1,8 @@
 package org.liamjd.bascule.db.entities
 
 import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.liamjd.bascule.db.dbConnections
 
 class InputFields(id: EntityID<Long>) : LongEntity(id) {
 
@@ -23,6 +25,21 @@ class RefFieldTypes(id: EntityID<Int>) : IntEntity(id) {
 	var refName by REF_FIELD_TYPE.refName
 
 	companion object : IntEntityClass<RefFieldTypes>(REF_FIELD_TYPE) {
-		// functions go here
+
+		fun list(): Set<RefFieldTypes> {
+			val rows = transaction(dbConnections.connect()) {
+				RefFieldTypes.all().toSet()
+			}
+
+			return rows;
+		}
+
+		fun get(refName: String): RefFieldTypes {
+			return transaction(dbConnections.connect()) {
+				RefFieldTypes.find { REF_FIELD_TYPE.refName eq refName }.first()
+			}
+		}
+
+
 	}
 }

@@ -72,6 +72,16 @@ abstract class AbstractController(path: String) {
 
 	}
 
+	fun flash(session: Session, key: String, obj: Any) {
+		session.attribute(key, obj)
+	}
+
+	fun getFromFlash(session: Session, key: String): Any? {
+		val obj = session.attribute<Any?>(key)
+		session.removeAttribute(key)
+		return obj
+	}
+
 	fun debugParams(request: Request) {
 		request.params().forEach {
 			logger.debug("Param ${it.key} -> ${it.value}")
