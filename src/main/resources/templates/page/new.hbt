@@ -2,8 +2,18 @@
 
 	<h2>Create new page based on template {{ __pageTemplate.refName }}</h2>
 
-	<form name="page_new" id="page_new" method="post" action="create">
-		<input type="hidden" name="templateRef" value="{{ __pageTemplate.refName}} "/>
+	<form name="page_new" id="page_new" method="post" action="/page/new/create">
+
+		<label for="templateRef">Choose template</label>
+		<select name="templateRef" id="templateRef">
+			{{#each __pageTemplates}}
+				<option val="{{refName}}">{{refName}}</option>
+			{{/each}}
+		</select>
+
+		<!--
+		<input type="hidden" name="templateRef" value="{{! __pageTemplate.refName}} "/>
+-->
 		<label for="refName">Reference name</label>
 		<input name="refName" id="refName"/>
 

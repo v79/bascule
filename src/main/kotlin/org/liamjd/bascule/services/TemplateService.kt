@@ -7,4 +7,5 @@ interface TemplateService {
 	fun getPageTemplate(refName: String) : PageTemplate?
 
 	fun create(template: PageTemplate) : Long
+	fun list(count: Int): List<PageTemplate>
 }

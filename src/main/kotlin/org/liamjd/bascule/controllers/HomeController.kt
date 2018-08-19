@@ -47,15 +47,19 @@ class HomeController : AbstractController(path = "/") {
 		}
 
 		// pages
-		get("${path}page/new/:template") {
-			val template = templateService.getPageTemplate(request.params("template"))
+		get("${path}page/new") {
+			val templates = templateService.list(10)
 
-			if(template != null) {
-				model.put("__title", "New page")
-				model.put("__pageTemplate", template)
+			model.put("__title", "New page")
+
+			if (templates.isNotEmpty()) {
+				model.put("__pageTemplates", templates)
+
+				debugModel()
+
 				engine.render(ModelAndView(model, "page/new"))
 			} else {
-				"page template not found"
+				"no templates!"
 			}
 		}
 

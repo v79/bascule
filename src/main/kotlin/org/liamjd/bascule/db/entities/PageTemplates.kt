@@ -6,6 +6,7 @@ import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.liamjd.bascule.db.dbConnections
 import org.liamjd.bascule.db.entities.PAGE_TEMPLATE
@@ -44,6 +45,16 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 				}.id.value
 			}
 			return id
+		}
+
+		fun list(count: Int): List<PageTemplates> {
+			val result = mutableListOf<PageTemplates>()
+			transaction(dbConnections.connect()) {
+				addLogger(StdOutSqlLogger)
+				val all = PAGE_TEMPLATE.selectAll().limit(count)
+				result.addAll(PageTemplates.wrapRows(all).toMutableList())
+			}
+			return result
 		}
 
 	}

@@ -11,7 +11,7 @@
 		<h3>Actions</h3>
 		<ul>
 			<li><a href="/pageTemplate/new">New Page Template</a></li>
-			<li><a href=""></a>New Page</li>
+			<li><a href="page/new">New Page</a></li>
 		</ul>
 	</div>
 {{/partial}}

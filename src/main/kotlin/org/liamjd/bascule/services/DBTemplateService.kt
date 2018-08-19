@@ -20,4 +20,16 @@ class DBTemplateService : TemplateService {
 		}
 		return null
 	}
+
+	override fun list(count: Int): List<PageTemplate> {
+		val rows = PageTemplates.list(count)
+		val result = mutableListOf<PageTemplate>()
+		if (rows.isNotEmpty()) {
+			rows.forEach {
+				val template = PageTemplate(it.refName, it.sourceText)
+				result.add(template)
+			}
+		}
+		return result
+	}
 }

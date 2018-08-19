@@ -53,6 +53,7 @@ abstract class AbstractController(path: String) {
 
 	init {
 		before {
+			logger.info(request.pathInfo())
 			model.clear()
 			model.put("__mode", Mode.VIEW) // default to viewing
 			model.put("__title","Bascule CMS")
