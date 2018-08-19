@@ -21,7 +21,7 @@ class DBTemplateService : TemplateService {
 		return null
 	}
 
-	override fun list(count: Int): List<PageTemplate> {
+	override fun listPageTemplates(count: Int): List<PageTemplate> {
 		val rows = PageTemplates.list(count)
 		val result = mutableListOf<PageTemplate>()
 		if (rows.isNotEmpty()) {

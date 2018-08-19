@@ -7,6 +7,13 @@
 		{{/each}}
 	</ol>
 
+	<h2>List of templates</h2>
+	<ol>
+		{{#each templates }}
+			<li>{{refName}}</li>
+		{{/each}}
+	</ol>
+
 	<div>
 		<h3>Actions</h3>
 		<ul>

@@ -1,6 +1,7 @@
 package org.liamjd.web.model
 
 import org.liamjd.bascule.render.HandlebarsRenderService
+import org.liamjd.bascule.render.RenderMode
 
 class Page (val refName: String, var title: String) {
 	var templateRef: String = ""
@@ -17,6 +18,6 @@ class Page (val refName: String, var title: String) {
 
 	fun render(): String {
 		val renderService = HandlebarsRenderService()
-		return renderService.render(this)
+		return renderService.render(this, RenderMode.EDIT)
 	}
 }

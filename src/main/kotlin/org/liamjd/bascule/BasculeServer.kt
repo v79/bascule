@@ -22,7 +22,7 @@ class BasculeServer : SparkApplication {
 		staticFiles.location("/public")
 
 		// initialize database
-//		dbConnections.initialize()
+		//dbConnections.initialize()
 
 		val reflections = Reflections(thisPackage.name, MethodAnnotationsScanner(), TypeAnnotationsScanner(), SubTypesScanner())
 		val controllers = reflections.getTypesAnnotatedWith(SparkController::class.java)

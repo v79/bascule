@@ -85,4 +85,10 @@ abstract class AbstractController(path: String) {
 			logger.info("Session attr ${it}")
 		}
 	}
+
+	fun debugModel() {
+		model.keys.forEach {
+			println("$it -> ${model[it]}")
+		}
+	}
 }

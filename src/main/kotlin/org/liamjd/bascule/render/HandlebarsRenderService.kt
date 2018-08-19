@@ -15,7 +15,7 @@ class HandlebarsRenderService : RenderService {
 	val pageService = DBPageService()
 	val templateService = DBTemplateService()
 
-	fun render(page: Page): String {
+	fun render(page: Page, mode: RenderMode): String {
 
 		val renderer = Handlebars()
 
