@@ -1,6 +1,6 @@
 package org.liamjd.web.model
 
-import java.util.*
+import org.liamjd.bascule.render.HandlebarsRenderService
 
 class Page (val refName: String, var title: String) {
 	var templateRef: String = ""
@@ -13,5 +13,10 @@ class Page (val refName: String, var title: String) {
 
 	fun getGroup(name: String): BlockGroup?  {
 		return blockGroups.find { it.refName == name }
+	}
+
+	fun render(): String {
+		val renderService = HandlebarsRenderService()
+		return renderService.render(this)
 	}
 }

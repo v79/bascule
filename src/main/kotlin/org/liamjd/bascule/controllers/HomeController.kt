@@ -80,6 +80,17 @@ class HomeController : AbstractController(path = "/") {
 			}
 		}
 
+		get("${path}page/edit/:refName") {
+			val refName = request.params(":refName")
+			val page = pageService.get(refName)
+			if (page != null) {
+				model.put("__page", page)
+				engine.render(ModelAndView(model, "page/edit"))
+			} else {
+				"edit page "
+			}
+		}
+
 	}
 
 	fun debugModel() {

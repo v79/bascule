@@ -6,11 +6,14 @@ import org.liamjd.web.model.PageTemplate
 
 class DBPageService : PageService {
 
+	val templateService = DBTemplateService()
+
 	override fun get(refName: String): Page? {
 		var page: Page? = null
 		val entity = Pages.get(refName)
 		if (entity != null) {
 			page = Page(entity.refName, entity.title)
+			page.templateRef = Pages.getTemplateName(refName)
 		}
 		return page
 	}

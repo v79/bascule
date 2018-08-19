@@ -1,0 +1,11 @@
+{{#partial "content" }}
+
+	<h2>Editing page {{ __page.title }}</h2>
+
+	<div class="page-preview">
+		{{{ __page.render }}}
+	</div>
+
+{{/partial}}
+
+{{> base/base}}

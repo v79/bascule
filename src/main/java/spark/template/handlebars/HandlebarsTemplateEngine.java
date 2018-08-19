@@ -16,9 +16,14 @@
  */
 package spark.template.handlebars;
 
+import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.cache.GuavaTemplateCache;
+import com.github.jknack.handlebars.context.FieldValueResolver;
+import com.github.jknack.handlebars.context.JavaBeanValueResolver;
+import com.github.jknack.handlebars.context.MapValueResolver;
+import com.github.jknack.handlebars.context.MethodValueResolver;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.github.jknack.handlebars.io.TemplateLoader;
 import com.github.jknack.handlebars.io.TemplateSource;
@@ -38,29 +43,29 @@ import java.util.concurrent.TimeUnit;
  */
 public class HandlebarsTemplateEngine extends TemplateEngine {
 
-    protected Handlebars handlebars;
+	protected Handlebars handlebars;
 
-    /**
-     * Constructs a handlebars template engine
-     */
-    public HandlebarsTemplateEngine() {
-        this("/templates");
-    }
-
-    /**
-     * Constructs a handlebars template engine
-     *
-     * @param resourceRoot the resource root
-     */
-    public HandlebarsTemplateEngine(String resourceRoot) {
-       this(resourceRoot,null);
-    }
+	/**
+	 * Constructs a handlebars template engine
+	 */
+	public HandlebarsTemplateEngine() {
+		this("/templates");
+	}
 
 	/**
 	 * Constructs a handlebars template engine
 	 *
 	 * @param resourceRoot the resource root
-	 * @param suffix the file extension
+	 */
+	public HandlebarsTemplateEngine(String resourceRoot) {
+		this(resourceRoot, null);
+	}
+
+	/**
+	 * Constructs a handlebars template engine
+	 *
+	 * @param resourceRoot the resource root
+	 * @param suffix       the file extension
 	 */
 	public HandlebarsTemplateEngine(String resourceRoot, String suffix) {
 		TemplateLoader templateLoader = new ClassPathTemplateLoader();
@@ -77,13 +82,18 @@ public class HandlebarsTemplateEngine extends TemplateEngine {
 	}
 
 	@Override
-    public String render(ModelAndView modelAndView) {
-        String viewName = modelAndView.getViewName();
-        try {
-            Template template = handlebars.compile(viewName);
-            return template.apply(modelAndView.getModel());
-        } catch (IOException e) {
-            throw new RuntimeIOException(e);
-        }
-    }
+	public String render(ModelAndView modelAndView) {
+		String viewName = modelAndView.getViewName();
+		// might want to move this up a bit towards the controllers
+		Context context = Context.newBuilder(modelAndView.getModel())
+				.resolver(MethodValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE, MapValueResolver.INSTANCE, FieldValueResolver.INSTANCE)
+				.build();
+
+		try {
+			Template template = handlebars.compile(viewName);
+			return template.apply(context);
+		} catch (IOException e) {
+			throw new RuntimeIOException(e);
+		}
+	}
 }

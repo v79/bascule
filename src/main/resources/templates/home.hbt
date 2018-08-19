@@ -3,7 +3,7 @@
 
 	<ol>
 		{{#each pages }}
-			<li>{{ refName}} - {{title}} </li>
+			<li><a href="/page/edit/{{refName}}">{{ refName}} - {{title}}</a></li>
 		{{/each}}
 	</ol>
 

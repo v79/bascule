@@ -32,6 +32,24 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 					Pages.find { PAGE.refName eq refName }.firstOrNull()
 				}
 
+		fun getTemplateName(pageRefName: String): String {
+			var templateName: String = ""
+			transaction(dbConnections.connect()) {
+				addLogger(StdOutSqlLogger)
+				val page = Pages.find { PAGE.refName eq pageRefName }.firstOrNull()
+				if (page != null) {
+					val template = PAGE_TEMPLATE.innerJoin(PAGE).slice(PAGE_TEMPLATE.refName)
+							.select {
+								PAGE_TEMPLATE.id eq PAGE.template and (PAGE.refName eq pageRefName)
+							}.distinct().firstOrNull()
+					if (template != null) {
+						templateName = template[PAGE_TEMPLATE.refName]
+					}
+				}
+			}
+			return templateName
+		}
+
 		fun new(refName: String, title: String, pageTemplateName: String): Pages {
 			val newPage: Pages
 			newPage = transaction {
@@ -133,8 +151,6 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 			return result
 		}
 	}
-
-
 
 
 }
