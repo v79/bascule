@@ -36,6 +36,7 @@ class BasculeServer : SparkApplication {
 
 
 	override fun init() {
+
 	}
 
 	private fun displayStartupMessage(portNumber: Int?) {

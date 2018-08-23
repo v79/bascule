@@ -17,7 +17,9 @@
 		<footer>
 			<span>Powered by Handlebars.java</span>
 			<span>And SparkKotlin</span>
+			<script src="/js/templates.js"></script>
 		</footer>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	{{/block}}
 
 </body>

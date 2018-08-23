@@ -10,6 +10,15 @@ import spark.ModelAndView
 import spark.kotlin.get
 import spark.kotlin.post
 
+class BackingForm() {
+	var refName: String = ""
+	var source: String = ""
+	var fields = mutableListOf<InputField>()
+}
+
+class NewPageTemplateForm(val refName: String, val source: String, fields: List<NewInputFieldForm>)
+class NewInputFieldForm(val refName: String, val fieldType: String)
+
 @SparkController
 class PageTemplateController : AbstractController(path = "/pageTemplate") {
 
@@ -17,16 +26,8 @@ class PageTemplateController : AbstractController(path = "/pageTemplate") {
 	val fieldService = InputFieldService()
 
 	init {
-		get("$path/new") {
-			val fields = mutableListOf<InputField>()
-			val newestField = getFromFlash(request.session(), "flash_newField")
-			if (newestField != null) {
-				fields.add(newestField as InputField)
-			}
-			val fieldTypes = fieldService.getFieldTypes()
 
-			model.put("__fields", fields)
-			model.put("__fieldTypes", fieldTypes)
+		get("$path/new") {
 			engine.render(ModelAndView(model, "pageTemplate/new"))
 		}
 
@@ -34,26 +35,38 @@ class PageTemplateController : AbstractController(path = "/pageTemplate") {
 			val form = request.bind<PageTemplate>()
 
 			if (form != null) {
-				templateService.create(form)
-				redirect("/")
+				val templateId = templateService.create(form)
+				redirect("/pageTemplate/edit/${form.refName}")
 			}
 		}
 
-		post("$path/addField") {
-			val newFieldForm = request.bind<NewInputFieldForm>()
+		get("$path/edit/:templateRef") {
+			val fieldTypes = fieldService.getFieldTypes()
+			model.put("__fieldTypes", fieldTypes)
+			val pageTemplate = templateService.getPageTemplate(request.params(":templateRef"))
+			if (pageTemplate != null) {
+				logger.info("Editing template ${pageTemplate}")
+				model.put("pageTemplate", pageTemplate)
+				request.session().attribute("pageTemplate", pageTemplate)
+			} else {
+				redirect("/", 404)
+			}
+			engine.render(ModelAndView(model, "pageTemplate/edit"))
+		}
 
-			if (newFieldForm != null) {
-				val type = fieldService.getFieldType(newFieldForm.fieldType)
-				val field = InputField(newFieldForm.refName, type)
-
-				// now I really need a flash...
-				flash(request.session(), "flash_newField", field)
+		post("$path/edit/addField") {
+			val fieldForm = request.bind<NewInputFieldForm>()
+			if (fieldForm != null) {
+				/*	val fieldType = templateService.getFieldType(fieldForm.fieldType)
+					val newField = InputField(fieldForm.refName, fieldType)
+					// do I store the pageTemplate in session? yes...
+					val pageTemplate = request.session().attribute<PageTemplate>("pageTemplate")
+					pageTemplate.fields.add(newField)
+					model.put("pageTemplate",pageTemplate)*/
 			}
 
-
-			redirect("$path/new")
+			engine.render(ModelAndView(model, "pageTemplate/edit"))
 		}
 	}
 }
 
-class NewInputFieldForm(val refName: String, val fieldType: String)

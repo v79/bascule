@@ -2,7 +2,7 @@
 
 	<h2>Create new page template</h2>
 
-	<form name="pageTemplate_new" id="pageTemplate_new" method="post" action="new" >
+	<form name="pageTemplate_new" id="pageTemplate_new" method="post" action="new">
 		<label for="refName">Reference name</label>
 		<input name="refName" id="refName"/>
 
@@ -10,33 +10,9 @@
 		<textarea name="source" id="source" form="pageTemplate_new"></textarea>
 
 		<button type="submit">Submit</button>
+
 	</form>
 
-	<div class="page-template-fields" style="background-color: bisque;">
-
-		<div id="page_template_field_list">
-			<h3>Input fields</h3>
-
-			<ul>{{#each __fields }}
-				<li>{{ refName }} - {{ description }} - position: {{ position }} - type: {{ type }}        <a
-						href="#">X</a></li>
-			{{/each}}
-			</ul>
-
-			<form name="pageTemplate_fields" id="pageTemplate_fields" method="post" action="addField">
-				<label for="fieldType">Choose template</label>
-				<select name="fieldType" id="fieldType">
-					{{#each __fieldTypes }}
-						<option val="{{refName}}">{{refName}}</option>
-					{{/each}}
-				</select>
-				<label for="refName">Name</label>
-				<input name="refName" type="text"/>
-
-				<button type="submit">Add</button>
-			</form>
-		</div>
-	</div>
 
 {{/partial}}
 

@@ -1,0 +1,34 @@
+{{#partial "content" }}
+
+	<div>
+		<h2>Editing Template '{{ pageTemplate.refName }}'</h2>
+
+	</div>
+
+	<div class="page-template-fields" style="background-color: bisque;">
+		<h3>Input fields</h3>
+		<div id="page_template_field_list">
+			<ul>{{#each fields }}
+				<li>{{ refName }} - {{ description }} - position: {{ position }} - type: {{ type }}        <a
+						href="#">X</a></li>
+			{{/each}}
+			</ul>
+		</div>
+	</div>
+
+	<form name="pageTemplate_fields" id="pageTemplate_fields" method="post" action="addField">
+		<label for="fieldType">Choose template</label>
+		<select name="fieldType" id="fieldType">
+			{{#each __fieldTypes }}
+				<option value="{{refName}}">{{refName}}</option>
+			{{/each}}
+		</select>
+		<label for="refName">Name</label>
+		<input name="refName" id="refName" type="text"/>
+
+		<button type="submit">Add</button>
+	</form>
+
+{{/partial}}
+
+{{> base/base}}
