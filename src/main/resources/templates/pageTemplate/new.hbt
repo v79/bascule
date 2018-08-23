@@ -6,13 +6,9 @@
 		<label for="refName">Reference name</label>
 		<input name="refName" id="refName"/>
 
-		<label for="source">Template sourcecode</label>
-		<textarea name="source" id="source" form="pageTemplate_new"></textarea>
-
-		<button type="submit">Submit</button>
+		<button type="submit">Create</button>
 
 	</form>
-
 
 {{/partial}}
 

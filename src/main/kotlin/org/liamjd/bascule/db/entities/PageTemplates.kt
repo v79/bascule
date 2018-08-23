@@ -3,12 +3,11 @@ package org.liamjd.web.db.entities
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.liamjd.bascule.db.dbConnections
+import org.liamjd.bascule.db.entities.INPUT_FIELD
+import org.liamjd.bascule.db.entities.InputFields
 import org.liamjd.bascule.db.entities.PAGE_TEMPLATE
 
 class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
@@ -18,7 +17,9 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 	var createdOn by PAGE_TEMPLATE.createdOn
 	var lastUpdated by PAGE_TEMPLATE.lastUpdated
 
+	val fields by InputFields optionalReferrersOn INPUT_FIELD.pageTemplate
 	var sourceText by PAGE_TEMPLATE.sourceText
+
 
 	companion object : LongEntityClass<PageTemplates>(PAGE_TEMPLATE) {
 
@@ -26,14 +27,30 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 			var template: PageTemplates? = null
 			transaction(dbConnections.connect()) {
 				addLogger(StdOutSqlLogger)
-				val result = PAGE_TEMPLATE.select {
-					PAGE_TEMPLATE.refName eq refName
-				}.distinct().firstOrNull()
+				val result = PAGE_TEMPLATE.innerJoin(INPUT_FIELD).select {
+					PAGE_TEMPLATE.refName eq refName and (INPUT_FIELD.pageTemplate eq PAGE_TEMPLATE.id)
+				}.firstOrNull()
 				if (result != null) {
 					template = wrapRow(result)
 				}
+				// get all the input fields
+
+
+
 			}
 			return template
+		}
+
+		fun getInputFieldsForTemplate(refName: String): List<InputFields> {
+			var fields = listOf<InputFields>()
+			transaction(dbConnections.connect()) {
+				addLogger(StdOutSqlLogger)
+				val fieldResult = InputFields.wrapRows(INPUT_FIELD.innerJoin(PAGE_TEMPLATE)
+						.slice(INPUT_FIELD.columns)
+						.select { INPUT_FIELD.pageTemplate eq PAGE_TEMPLATE.id and (PAGE_TEMPLATE.refName eq refName) })
+				fields = fieldResult.toList()
+			}
+			return fields
 		}
 
 		fun createPageTemplate(refName: String, source: String): Long {
@@ -45,6 +62,16 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 				}.id.value
 			}
 			return id
+		}
+
+		fun save(refName: String, source: String): Int {
+			val result = transaction(dbConnections.connect()) {
+				addLogger(StdOutSqlLogger)
+				PAGE_TEMPLATE.update({ PAGE_TEMPLATE.refName eq refName }) {
+					it[sourceText] = source
+				}
+			}
+			return result
 		}
 
 		fun list(count: Int): List<PageTemplates> {

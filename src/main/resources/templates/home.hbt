@@ -10,7 +10,7 @@
 	<h2>List of templates</h2>
 	<ol>
 		{{#each templates }}
-			<li>{{refName}}</li>
+			<li><a href="/pageTemplate/edit/{{refName}}">{{refName}}</a></li>
 		{{/each}}
 	</ol>
 

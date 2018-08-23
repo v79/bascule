@@ -6,17 +6,23 @@ import org.liamjd.bascule.services.DBTemplateService
 import org.liamjd.caisson.extensions.bind
 import org.liamjd.web.model.Page
 import spark.ModelAndView
+import spark.kotlin.before
 import spark.kotlin.get
 import spark.kotlin.post
 
 @SparkController
-class PageController : AbstractController(path = "/page") {
+class PageController : AbstractController() {
 
 	val templateService = DBTemplateService()
 	val pageService = DBPageService()
 
 	init {
-		get("${path}/new") {
+
+		before("/page/*") {
+			println("Before PageController ${request.pathInfo()}")
+		}
+
+		get("/page/new") {
 			val templates = templateService.listPageTemplates(10)
 
 			model.put("__title", "New page")
@@ -30,7 +36,7 @@ class PageController : AbstractController(path = "/page") {
 			}
 		}
 
-		post("${path}/new/create") {
+		post("page/new/create") {
 			val form = request.bind<PageForm>()
 			val page: Page?
 			if (form != null) {
@@ -47,7 +53,7 @@ class PageController : AbstractController(path = "/page") {
 			}
 		}
 
-		get("${path}/edit/:refName") {
+		get("page/edit/:refName") {
 			val refName = request.params(":refName")
 			val page = pageService.get(refName)
 			if (page != null) {

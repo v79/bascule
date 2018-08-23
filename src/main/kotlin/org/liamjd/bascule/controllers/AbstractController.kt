@@ -3,8 +3,6 @@ package org.liamjd.bascule.controllers
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Session
-import spark.kotlin.after
-import spark.kotlin.notFound
 import spark.template.handlebars.HandlebarsTemplateEngine
 import java.time.Instant
 import java.time.ZoneId
@@ -42,35 +40,12 @@ enum class Mode {
 	PREVIEW
 }
 
-abstract class AbstractController(path: String) {
+abstract class AbstractController() {
 	open val logger = LoggerFactory.getLogger(AbstractController::class.java)
 
-	open var path: String = path
-
 	protected val engine: HandlebarsTemplateEngine = HandlebarsTemplateEngine("/templates",".hbt")
+
 	val model: MutableMap<String, Any> = hashMapOf<String, Any>()
-
-//	open val authService = FakeAuthService()
-
-	init {
-		/** The before method is called before every path group which is initialised, i.e. for each of my controllers.
-		 * This is not what I want.
-		 * So each controller needs its own before(path){} method.
-		 */
-		/*	before() {
-				logger.info("- before AbstractController - ${Instant.now()} for route ${request.pathInfo()}")
-				model.clear()
-				model.put("__mode", Mode.VIEW) // default to viewing
-				model.put("__title","Bascule CMS")
-	//			debugSession(session())
-			}*/
-
-		after {
-		}
-
-		notFound { "404 not found?"}
-
-	}
 
 	fun flash(session: Session, key: String, obj: Any) {
 		session.attribute(key, obj)

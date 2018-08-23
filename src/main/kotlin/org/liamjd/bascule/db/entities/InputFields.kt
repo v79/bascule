@@ -3,6 +3,7 @@ package org.liamjd.bascule.db.entities
 import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.liamjd.bascule.db.dbConnections
+import org.liamjd.web.db.entities.PageTemplates
 
 class InputFields(id: EntityID<Long>) : LongEntity(id) {
 
@@ -14,6 +15,7 @@ class InputFields(id: EntityID<Long>) : LongEntity(id) {
 	var description by INPUT_FIELD.description
 
 	var type by RefFieldTypes referencedOn INPUT_FIELD.type
+	var pageTemplate by PageTemplates optionalReferencedOn INPUT_FIELD.pageTemplate
 
 	companion object : LongEntityClass<InputFields>(INPUT_FIELD) {
 		// functions go here
