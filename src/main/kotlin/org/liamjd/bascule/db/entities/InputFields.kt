@@ -1,6 +1,8 @@
 package org.liamjd.bascule.db.entities
 
 import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.liamjd.bascule.db.dbConnections
 import org.liamjd.web.db.entities.PageTemplates
@@ -13,6 +15,7 @@ class InputFields(id: EntityID<Long>) : LongEntity(id) {
 	var lastUpdated by INPUT_FIELD.lastUpdated
 
 	var description by INPUT_FIELD.description
+	var position by INPUT_FIELD.position
 
 	var type by RefFieldTypes referencedOn INPUT_FIELD.type
 	var pageTemplate by PageTemplates optionalReferencedOn INPUT_FIELD.pageTemplate
@@ -30,6 +33,7 @@ class RefFieldTypes(id: EntityID<Int>) : IntEntity(id) {
 
 		fun list(): Set<RefFieldTypes> {
 			val rows = transaction(dbConnections.connect()) {
+				addLogger(StdOutSqlLogger)
 				RefFieldTypes.all().toSet()
 			}
 
@@ -38,10 +42,10 @@ class RefFieldTypes(id: EntityID<Int>) : IntEntity(id) {
 
 		fun get(refName: String): RefFieldTypes {
 			return transaction(dbConnections.connect()) {
+				addLogger(StdOutSqlLogger)
 				RefFieldTypes.find { REF_FIELD_TYPE.refName eq refName }.first()
 			}
 		}
-
 
 	}
 }

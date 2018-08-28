@@ -68,10 +68,13 @@ class PageTemplateController : AbstractController() {
 			val fieldForm = request.bind<NewInputFieldForm>()
 			if (fieldForm != null) {
 				val fieldType = templateService.getFieldType(fieldForm.fieldType)
-					val newField = InputField(fieldForm.refName, fieldType)
-					// do I store the pageTemplate in session? yes...
-					val pageTemplate = request.session().attribute<PageTemplate>("pageTemplate")
-					pageTemplate.fields.add(newField)
+				val newField = InputField(fieldForm.refName, fieldType)
+				// do I store the pageTemplate in session? yes...
+				val pageTemplate = request.session().attribute<PageTemplate>("pageTemplate")
+				templateService.addInputField(pageTemplate.refName, newField)
+
+				pageTemplate.fields.add(newField)
+
 				model.put("pageTemplate", pageTemplate)
 
 				pageTemplate.fields

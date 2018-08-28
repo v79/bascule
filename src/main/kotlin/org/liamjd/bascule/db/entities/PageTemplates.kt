@@ -9,6 +9,7 @@ import org.liamjd.bascule.db.dbConnections
 import org.liamjd.bascule.db.entities.INPUT_FIELD
 import org.liamjd.bascule.db.entities.InputFields
 import org.liamjd.bascule.db.entities.PAGE_TEMPLATE
+import org.liamjd.bascule.db.entities.RefFieldTypes
 
 class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 
@@ -27,15 +28,9 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 			var template: PageTemplates? = null
 			transaction(dbConnections.connect()) {
 				addLogger(StdOutSqlLogger)
-				val result = PAGE_TEMPLATE.innerJoin(INPUT_FIELD).select {
-					PAGE_TEMPLATE.refName eq refName and (INPUT_FIELD.pageTemplate eq PAGE_TEMPLATE.id)
-				}.firstOrNull()
-				if (result != null) {
-					template = wrapRow(result)
-				}
-				// get all the input fields
 
-
+				val pt = wrapRow(PAGE_TEMPLATE.select { PAGE_TEMPLATE.refName eq refName }.first())
+				template = pt
 
 			}
 			return template
@@ -82,6 +77,27 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 				result.addAll(PageTemplates.wrapRows(all).toMutableList())
 			}
 			return result
+		}
+
+		fun createInputField(templateRef: String, refName: String, typeRef: String): Int {
+			var position = 0;
+			transaction(dbConnections.connect()) {
+				addLogger(StdOutSqlLogger)
+				val pT = wrapRow(PAGE_TEMPLATE.select { PAGE_TEMPLATE.refName eq templateRef }.first())
+				val fieldCount = INPUT_FIELD.innerJoin(PAGE_TEMPLATE)
+						.slice(INPUT_FIELD.columns)
+						.select { INPUT_FIELD.pageTemplate eq PAGE_TEMPLATE.id and (PAGE_TEMPLATE.refName eq templateRef) }.count()
+				val type = RefFieldTypes.get(typeRef)
+				val newField = InputFields.new {
+					this.refName = refName
+					this.type = type
+					this.pageTemplate = pT
+					this.position = fieldCount + 1
+				}
+				position = newField.position
+			}
+
+			return position
 		}
 
 	}
