@@ -13,4 +13,5 @@ interface TemplateService {
 	fun save(template: PageTemplate): Int
 	fun getFieldType(refName: String): InputFieldType
 	fun addInputField(templateRef: String, newField: InputField): Int
+	fun deleteInputField(fieldRef: String): Boolean
 }

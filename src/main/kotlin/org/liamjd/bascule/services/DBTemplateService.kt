@@ -71,4 +71,8 @@ class DBTemplateService : TemplateService {
 		val position = PageTemplates.createInputField(templateRef, newField.refName, newField.type.refName)
 		return position
 	}
+
+	override fun deleteInputField(fieldRef: String): Boolean {
+		return PageTemplates.deleteInputField(fieldRef)
+	}
 }

@@ -20,3 +20,13 @@ function newTemplateAddField() {
 	});
 }
 
+function newTemplateDeleteField(fieldReference) {
+	$.ajax({
+		url: '/pageTemplate/edit/deleteField',
+		method: 'post',
+		data: fieldReference,
+		success: function (response, statusText, xhr) {
+			$('#' + 'page_template_field_list').html(response);
+		}
+	});
+}

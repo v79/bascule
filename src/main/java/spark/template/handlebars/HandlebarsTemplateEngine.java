@@ -96,4 +96,18 @@ public class HandlebarsTemplateEngine extends TemplateEngine {
 			throw new RuntimeIOException(e);
 		}
 	}
+
+	/*public String renderPartial(Map<String,Object> model) {
+
+		Context context = Context.newBuilder(model)
+				.resolver(MethodValueResolver.INSTANCE, JavaBeanValueResolver.INSTANCE, MapValueResolver.INSTANCE, FieldValueResolver.INSTANCE)
+				.build();
+
+		try {
+			Template template = handlebars.
+			return template.apply(context);
+		} catch (IOException e) {
+			throw new RuntimeIOException(e);
+		}
+	}*/
 }

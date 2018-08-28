@@ -66,19 +66,27 @@ class PageTemplateController : AbstractController() {
 
 		post("/pageTemplate/edit/addField") {
 			val fieldForm = request.bind<NewInputFieldForm>()
-//			val partialModel = mutableMapOf<String,Any>()
 			if (fieldForm != null) {
+				val pageTemplate = request.session().attribute<PageTemplate>("pageTemplate")
+				val fieldCount = pageTemplate.fields.size
 				val fieldType = templateService.getFieldType(fieldForm.fieldType)
 				val newField = InputField(fieldForm.refName, fieldType)
-				// do I store the pageTemplate in session? yes...
-				val pageTemplate = request.session().attribute<PageTemplate>("pageTemplate")
-				templateService.addInputField(pageTemplate.refName, newField)
-
+				newField.position = templateService.addInputField(pageTemplate.refName, newField)
 				pageTemplate.fields.add(newField)
 
 				model.put("pageTemplate", pageTemplate)
-//				partialModel.put("pageTemplate",pageTemplate)
 			}
+			engine.render(ModelAndView(model, "/pageTemplate/partials/fieldList"))
+		}
+
+		post("/pageTemplate/edit/deleteField") {
+			val fieldToDelete = request.queryParams().toSet().first()
+			if (fieldToDelete != null) {
+				templateService.deleteInputField(fieldToDelete)
+			}
+			val pageTemplate = request.session().attribute<PageTemplate>("pageTemplate")
+			pageTemplate.fields.removeIf { t -> t.refName == fieldToDelete }
+			model.put("pageTemplate", pageTemplate)
 			engine.render(ModelAndView(model, "/pageTemplate/partials/fieldList"))
 		}
 

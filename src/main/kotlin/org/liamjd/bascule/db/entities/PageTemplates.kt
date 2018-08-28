@@ -99,5 +99,23 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 			return position
 		}
 
+		fun deleteInputField(fieldRef: String): Boolean {
+			var fieldCount = 0;
+			val result = transaction {
+				addLogger(StdOutSqlLogger)
+				// what on earth do I do with all the positions
+				val row = INPUT_FIELD.slice(INPUT_FIELD.id, INPUT_FIELD.position, INPUT_FIELD.pageTemplate).select { INPUT_FIELD.refName eq fieldRef }.first()
+				val fieldToDelete = row[INPUT_FIELD.id]
+				val positionToDelete = row[INPUT_FIELD.position]
+				val pageTemplate = row[INPUT_FIELD.pageTemplate]
+				INPUT_FIELD.deleteWhere { INPUT_FIELD.id eq fieldToDelete }
+
+				// I'm fed up fighting Exposed's chronic lack of documentation
+
+				true
+			}
+			return result
+		}
+
 	}
 }
