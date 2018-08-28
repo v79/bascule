@@ -28,7 +28,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 	companion object : LongEntityClass<Pages>(PAGE) {
 
 		fun get(refName: String): Pages? =
-				transaction {
+				transaction(dbConnections.connect()) {
 					Pages.find { PAGE.refName eq refName }.firstOrNull()
 				}
 
@@ -52,7 +52,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun new(refName: String, title: String, pageTemplateName: String): Pages {
 			val newPage: Pages
-			newPage = transaction {
+			newPage = transaction(dbConnections.connect()) {
 				addLogger(StdOutSqlLogger)
 				val template = PAGE_TEMPLATE.slice(PAGE_TEMPLATE.id)
 						.select { PAGE_TEMPLATE.refName eq pageTemplateName }
@@ -82,7 +82,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun getBlockGroups(page: Pages): Set<BlockGroups> {
 			val groupSet = mutableSetOf<BlockGroups>()
-			transaction {
+			transaction(dbConnections.connect()) {
 				//			addLogger(StdOutSqlLogger)
 				val groups =
 						BLOCK_GROUP.innerJoin(PAGE)
@@ -100,7 +100,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun getBlocks(page: Pages): Set<Blocks> {
 			val blockSet = mutableSetOf<Blocks>()
-			transaction {
+			transaction(dbConnections.connect()) {
 				//			addLogger(StdOutSqlLogger)
 				val blocks = BLOCK.innerJoin(PAGE)
 						.slice(BLOCK.columns)
@@ -116,7 +116,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun getBlockType(blocks: Blocks): BlockTypes? {
 			var types: BlockTypes? = null
-			transaction {
+			transaction(dbConnections.connect()) {
 				//			addLogger(StdOutSqlLogger)
 				val result = BLOCK_TYPE.innerJoin(BLOCK)
 						.slice(BLOCK_TYPE.columns)
@@ -132,7 +132,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 		fun count(): Int = transaction { Pages.count() }
 
 		fun referenceExists(refName: String): Boolean {
-			val page = transaction {
+			val page = transaction(dbConnections.connect()) {
 				Pages.find { PAGE.refName eq refName }.firstOrNull()
 			}
 			if (page != null) {
