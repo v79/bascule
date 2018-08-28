@@ -4,7 +4,6 @@ import org.jetbrains.exposed.dao.*
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.liamjd.bascule.db.dbConnections
 import org.liamjd.web.db.entities.PageTemplates
 
 class InputFields(id: EntityID<Long>) : LongEntity(id) {
@@ -32,7 +31,7 @@ class RefFieldTypes(id: EntityID<Int>) : IntEntity(id) {
 	companion object : IntEntityClass<RefFieldTypes>(REF_FIELD_TYPE) {
 
 		fun list(): Set<RefFieldTypes> {
-			val rows = transaction(dbConnections.connect()) {
+			val rows = transaction {
 				addLogger(StdOutSqlLogger)
 				RefFieldTypes.all().toSet()
 			}
@@ -41,7 +40,7 @@ class RefFieldTypes(id: EntityID<Int>) : IntEntity(id) {
 		}
 
 		fun get(refName: String): RefFieldTypes {
-			return transaction(dbConnections.connect()) {
+			return transaction {
 				addLogger(StdOutSqlLogger)
 				RefFieldTypes.find { REF_FIELD_TYPE.refName eq refName }.first()
 			}

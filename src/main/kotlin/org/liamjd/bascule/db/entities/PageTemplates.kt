@@ -5,7 +5,6 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.liamjd.bascule.db.dbConnections
 import org.liamjd.bascule.db.entities.INPUT_FIELD
 import org.liamjd.bascule.db.entities.InputFields
 import org.liamjd.bascule.db.entities.PAGE_TEMPLATE
@@ -26,7 +25,7 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 
 		fun get(refName: String): PageTemplates? {
 			var template: PageTemplates? = null
-			transaction(dbConnections.connect()) {
+			transaction {
 				addLogger(StdOutSqlLogger)
 
 				val pt = wrapRow(PAGE_TEMPLATE.select { PAGE_TEMPLATE.refName eq refName }.first())
@@ -38,7 +37,7 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 
 		fun getInputFieldsForTemplate(refName: String): List<InputFields> {
 			var fields = listOf<InputFields>()
-			transaction(dbConnections.connect()) {
+			transaction {
 				addLogger(StdOutSqlLogger)
 				val fieldResult = InputFields.wrapRows(INPUT_FIELD.innerJoin(PAGE_TEMPLATE)
 						.slice(INPUT_FIELD.columns)
@@ -49,7 +48,7 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 		}
 
 		fun createPageTemplate(refName: String, source: String): Long {
-			val id = transaction(dbConnections.connect()) {
+			val id = transaction {
 				addLogger(StdOutSqlLogger)
 				PageTemplates.new {
 					this.refName = refName
@@ -60,7 +59,7 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 		}
 
 		fun save(refName: String, source: String): Int {
-			val result = transaction(dbConnections.connect()) {
+			val result = transaction {
 				addLogger(StdOutSqlLogger)
 				PAGE_TEMPLATE.update({ PAGE_TEMPLATE.refName eq refName }) {
 					it[sourceText] = source
@@ -71,7 +70,7 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 
 		fun list(count: Int): List<PageTemplates> {
 			val result = mutableListOf<PageTemplates>()
-			transaction(dbConnections.connect()) {
+			transaction {
 				addLogger(StdOutSqlLogger)
 				val all = PAGE_TEMPLATE.selectAll().limit(count)
 				result.addAll(PageTemplates.wrapRows(all).toMutableList())
@@ -81,7 +80,7 @@ class PageTemplates(id: EntityID<Long>) : LongEntity(id) {
 
 		fun createInputField(templateRef: String, refName: String, typeRef: String): Int {
 			var position = 0;
-			transaction(dbConnections.connect()) {
+			transaction {
 				addLogger(StdOutSqlLogger)
 				val pT = wrapRow(PAGE_TEMPLATE.select { PAGE_TEMPLATE.refName eq templateRef }.first())
 				val fieldCount = INPUT_FIELD.innerJoin(PAGE_TEMPLATE)

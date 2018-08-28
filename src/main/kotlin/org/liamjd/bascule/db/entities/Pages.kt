@@ -5,7 +5,6 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.liamjd.bascule.db.dbConnections
 import org.liamjd.bascule.db.entities.*
 
 // classes are used for .new{}, .find{}
@@ -28,13 +27,13 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 	companion object : LongEntityClass<Pages>(PAGE) {
 
 		fun get(refName: String): Pages? =
-				transaction(dbConnections.connect()) {
+				transaction {
 					Pages.find { PAGE.refName eq refName }.firstOrNull()
 				}
 
 		fun getTemplateName(pageRefName: String): String {
 			var templateName: String = ""
-			transaction(dbConnections.connect()) {
+			transaction {
 				addLogger(StdOutSqlLogger)
 				val page = Pages.find { PAGE.refName eq pageRefName }.firstOrNull()
 				if (page != null) {
@@ -52,7 +51,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun new(refName: String, title: String, pageTemplateName: String): Pages {
 			val newPage: Pages
-			newPage = transaction(dbConnections.connect()) {
+			newPage = transaction {
 				addLogger(StdOutSqlLogger)
 				val template = PAGE_TEMPLATE.slice(PAGE_TEMPLATE.id)
 						.select { PAGE_TEMPLATE.refName eq pageTemplateName }
@@ -69,7 +68,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 		}
 
 		fun update(refName: String, title: String): Boolean {
-			val updated = transaction(dbConnections.connect()) {
+			val updated = transaction {
 				addLogger(StdOutSqlLogger)
 
 				PAGE.update({ PAGE.refName eq refName }) {
@@ -82,7 +81,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun getBlockGroups(page: Pages): Set<BlockGroups> {
 			val groupSet = mutableSetOf<BlockGroups>()
-			transaction(dbConnections.connect()) {
+			transaction {
 				//			addLogger(StdOutSqlLogger)
 				val groups =
 						BLOCK_GROUP.innerJoin(PAGE)
@@ -100,7 +99,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun getBlocks(page: Pages): Set<Blocks> {
 			val blockSet = mutableSetOf<Blocks>()
-			transaction(dbConnections.connect()) {
+			transaction {
 				//			addLogger(StdOutSqlLogger)
 				val blocks = BLOCK.innerJoin(PAGE)
 						.slice(BLOCK.columns)
@@ -116,7 +115,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun getBlockType(blocks: Blocks): BlockTypes? {
 			var types: BlockTypes? = null
-			transaction(dbConnections.connect()) {
+			transaction {
 				//			addLogger(StdOutSqlLogger)
 				val result = BLOCK_TYPE.innerJoin(BLOCK)
 						.slice(BLOCK_TYPE.columns)
@@ -132,7 +131,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 		fun count(): Int = transaction { Pages.count() }
 
 		fun referenceExists(refName: String): Boolean {
-			val page = transaction(dbConnections.connect()) {
+			val page = transaction {
 				Pages.find { PAGE.refName eq refName }.firstOrNull()
 			}
 			if (page != null) {
@@ -143,7 +142,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun list(count: Int): List<Pages> {
 			val result = mutableListOf<Pages>()
-			transaction(dbConnections.connect()) {
+			transaction {
 				addLogger(StdOutSqlLogger)
 				val all = PAGE.selectAll().limit(count)
 				result.addAll(Pages.wrapRows(all).toMutableList())

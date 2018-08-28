@@ -13,7 +13,8 @@ function newTemplateAddField() {
 		success: function (response, statusText, xhr) {
 			console.log("response -> " + response);
 			console.log("statusText -> " + statusText);
-			console.log("xhr -> " + xhr)
+			console.log("xhr -> " + xhr);
+			$('#' + 'page_template_field_list').html(response);
 		}
 
 	});

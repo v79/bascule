@@ -20,12 +20,7 @@
 		<div class="page-template-fields" style="background-color: bisque;">
 			<h3>Input fields</h3>
 			<div id="page_template_field_list">
-				<ul>{{#each pageTemplate.fields }}
-					<li>{{ refName }} - {{ description }} - position: {{ position }} - type: {{ type.refName }}
-						<a
-							href="#">X</a></li>
-				{{/each}}
-				</ul>
+				{{> pageTemplate/partials/fieldList }}
 			</div>
 
 			<label for="fieldType">Choose template</label>

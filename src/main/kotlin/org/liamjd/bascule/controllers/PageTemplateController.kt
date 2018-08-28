@@ -66,6 +66,7 @@ class PageTemplateController : AbstractController() {
 
 		post("/pageTemplate/edit/addField") {
 			val fieldForm = request.bind<NewInputFieldForm>()
+//			val partialModel = mutableMapOf<String,Any>()
 			if (fieldForm != null) {
 				val fieldType = templateService.getFieldType(fieldForm.fieldType)
 				val newField = InputField(fieldForm.refName, fieldType)
@@ -76,10 +77,9 @@ class PageTemplateController : AbstractController() {
 				pageTemplate.fields.add(newField)
 
 				model.put("pageTemplate", pageTemplate)
-
-				pageTemplate.fields
+//				partialModel.put("pageTemplate",pageTemplate)
 			}
-
+			engine.render(ModelAndView(model, "/pageTemplate/partials/fieldList"))
 		}
 
 		post("/pageTemplate/edit/save") {

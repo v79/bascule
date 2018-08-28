@@ -21,7 +21,7 @@ abstract class AbstractDao : Dao {
 		daoLogger.info("Using driver: ${dbDriver}")
 //		Database.connect(url = dbConnectionString + dbName, user = dbUser, password = dbPassword, driver = dbDriver)
 
-		transaction(dbConnections.connect()) {
+		transaction {
 			addLogger(StdOutSqlLogger)
 			SchemaUtils.drop(PAGE, PAGE_TEMPLATE, BLOCK, BLOCK_TEMPLATE, BLOCK_GROUP, BLOCK_TYPE)
 			SchemaUtils.create(PAGE, PAGE_TEMPLATE, BLOCK, BLOCK_TEMPLATE, BLOCK_GROUP, BLOCK_TYPE)
