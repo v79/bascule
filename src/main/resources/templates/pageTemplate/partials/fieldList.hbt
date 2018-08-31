@@ -1,0 +1,5 @@
+<ul>{{#each pageTemplate.fields }}
+	<li>{{ refName }} - {{ description }} - position: {{ position }} - type: {{ type.refName }}
+		<a class="button" onclick="newTemplateDeleteField('{{ refName}}');">X</a></li>
+{{/each}}
+</ul>

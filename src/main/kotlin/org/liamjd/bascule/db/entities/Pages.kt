@@ -5,7 +5,6 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.liamjd.bascule.db.dbConnections
 import org.liamjd.bascule.db.entities.*
 
 // classes are used for .new{}, .find{}
@@ -34,7 +33,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun getTemplateName(pageRefName: String): String {
 			var templateName: String = ""
-			transaction(dbConnections.connect()) {
+			transaction {
 				addLogger(StdOutSqlLogger)
 				val page = Pages.find { PAGE.refName eq pageRefName }.firstOrNull()
 				if (page != null) {
@@ -69,7 +68,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 		}
 
 		fun update(refName: String, title: String): Boolean {
-			val updated = transaction(dbConnections.connect()) {
+			val updated = transaction {
 				addLogger(StdOutSqlLogger)
 
 				PAGE.update({ PAGE.refName eq refName }) {
@@ -143,7 +142,7 @@ class Pages(id: EntityID<Long>) : LongEntity(id) {
 
 		fun list(count: Int): List<Pages> {
 			val result = mutableListOf<Pages>()
-			transaction(dbConnections.connect()) {
+			transaction {
 				addLogger(StdOutSqlLogger)
 				val all = PAGE.selectAll().limit(count)
 				result.addAll(Pages.wrapRows(all).toMutableList())

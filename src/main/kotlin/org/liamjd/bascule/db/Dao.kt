@@ -29,10 +29,35 @@ object dbConnections {
 	fun initialize() {
 		transaction(connect()) {
 			addLogger(StdOutSqlLogger)
-			SchemaUtils.drop(PAGE, PAGE_TEMPLATE, BLOCK, BLOCK_TEMPLATE, BLOCK_GROUP, BLOCK_TYPE)
-			SchemaUtils.create(PAGE, PAGE_TEMPLATE, BLOCK, BLOCK_TEMPLATE, BLOCK_GROUP, BLOCK_TYPE)
+			SchemaUtils.drop(PAGE, PAGE_TEMPLATE, BLOCK, BLOCK_TEMPLATE, BLOCK_GROUP, BLOCK_TYPE, INPUT_FIELD, REF_FIELD_TYPE)
+			SchemaUtils.create(PAGE, PAGE_TEMPLATE, BLOCK, BLOCK_TEMPLATE, BLOCK_GROUP, BLOCK_TYPE, INPUT_FIELD, REF_FIELD_TYPE)
 			//TODO: do something clever with reflection?
 //			SchemaUtils.createMissingTablesAndColumns(PAGE, PAGE_TEMPLATE, BLOCK, BLOCK_TEMPLATE, BLOCK_GROUP, BLOCK_TYPE)
+
+
+		}
+
+		addReferenceData()
+	}
+
+	private fun addReferenceData() {
+		transaction(connect()) {
+			addLogger(StdOutSqlLogger)
+			RefFieldTypes.new {
+				this.refName = "Text"
+			}
+			RefFieldTypes.new {
+				this.refName = "Number"
+			}
+			RefFieldTypes.new {
+				this.refName = "DateTime"
+			}
+			RefFieldTypes.new {
+				this.refName = "MediaReference"
+			}
+			RefFieldTypes.new {
+				this.refName = "RichText"
+			}
 		}
 	}
 }

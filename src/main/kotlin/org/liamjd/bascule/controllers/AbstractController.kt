@@ -3,10 +3,10 @@ package org.liamjd.bascule.controllers
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Session
-import spark.kotlin.after
-import spark.kotlin.before
-import spark.kotlin.notFound
 import spark.template.handlebars.HandlebarsTemplateEngine
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**
  * Turn a simple map of strings into a JSON format string
@@ -40,36 +40,21 @@ enum class Mode {
 	PREVIEW
 }
 
-abstract class AbstractController(path: String) {
+abstract class AbstractController() {
 	open val logger = LoggerFactory.getLogger(AbstractController::class.java)
 
-	open var path: String = path
-
-//	protected val engine: ThymeleafTemplateEngine = ThymeleafTemplateEngine()
 	protected val engine: HandlebarsTemplateEngine = HandlebarsTemplateEngine("/templates",".hbt")
+
 	val model: MutableMap<String, Any> = hashMapOf<String, Any>()
 
-//	open val authService = FakeAuthService()
+	fun flash(session: Session, key: String, obj: Any) {
+		session.attribute(key, obj)
+	}
 
-	init {
-		before {
-			logger.info(request.pathInfo())
-			model.clear()
-			model.put("__mode", Mode.VIEW) // default to viewing
-			model.put("__title","Bascule CMS")
-			debugSession(session())
-
-			if(!session().attribute<String>("user").isNullOrBlank()) {
-				model.put("__user",session().attribute("user"))
-			}
-		}
-
-		after {
-
-		}
-
-		notFound { "404 not found?"}
-
+	fun getFromFlash(session: Session, key: String): Any? {
+		val obj = session.attribute<Any?>(key)
+		session.removeAttribute(key)
+		return obj
 	}
 
 	fun debugParams(request: Request) {
@@ -79,10 +64,17 @@ abstract class AbstractController(path: String) {
 	}
 
 	fun debugSession(session: Session) {
-		logger.info("Session id ${session.id()}")
-		logger.info("Session created at ${session.creationTime()}")
+		val zone: ZoneId = ZoneId.systemDefault()
+		val df = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS").withZone(zone)
+		logger.info("Session id ${session.id()} created at ${df.format(Instant.ofEpochMilli(session.creationTime()))}")
 		session.attributes().forEach {
 			logger.info("Session attr ${it}")
+		}
+	}
+
+	fun debugModel() {
+		model.keys.forEach {
+			println("$it -> ${model[it]}")
 		}
 	}
 }
